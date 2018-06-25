@@ -1,8 +1,8 @@
-package gpsmon;
+package seamonbackend;
 
 public class GpsSqlSettings {
-  protected String dbName = "gpsmon"; //database name
-  protected String dbHost = "hydro.lin.irk.ru"; //database host
+  protected String dbName = "gpsmon_dev"; //database name
+  protected String dbHost = "localhost"; //database host
   protected String dbUser = "gpsmon"; //database user
   protected String dbPort = "5432"; //database port
   protected String dbPasswd = "d41d8cd98"; //database password

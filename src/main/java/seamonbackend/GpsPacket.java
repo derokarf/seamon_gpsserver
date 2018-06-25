@@ -1,10 +1,10 @@
-package gpsmon;
-
-import java.math.BigInteger;
+package seamonbackend;
 
 public class GpsPacket {
   private String type;
-  private BigInteger imei;
+  private Long imei;
+  // Id равный -1 стоит по умолчанию и применяется для незарегистрированных трекеров
+  private int idGadget = -1;
   private long ttdd;
   private double lat;
   private double lng;
@@ -14,6 +14,28 @@ public class GpsPacket {
 //  public static final String LIST_GPS_FIELDS = "(type,imei,ttdd,lat,lng,speed,course,isvalidgps)";
 
   public String getString2Sql(){
+    StringBuilder strSqlFields = new StringBuilder();
+    strSqlFields.append("(\'")
+        .append(type)
+        .append("\',")
+        .append(idGadget)
+        .append(",")
+        .append(ttdd)
+        .append(",")
+        .append(lat)
+        .append(",")
+        .append(lng)
+        .append(",")
+        .append(speed)
+        .append(",")
+        .append(course)
+        .append(",")
+        .append(isValidGPS)
+        .append(")");
+    return strSqlFields.toString();
+  }
+
+  public String getString2Sql_noReg(){
     StringBuilder strSqlFields = new StringBuilder();
     strSqlFields.append("(\'")
         .append(type)
@@ -35,6 +57,14 @@ public class GpsPacket {
     return strSqlFields.toString();
   }
 
+  public int getIdGadget() {
+    return idGadget;
+  }
+
+  public void setIdGadget(int idGadget) {
+    this.idGadget = idGadget;
+  }
+
   public boolean isValidGPS() {
     return isValidGPS;
   }
@@ -51,11 +81,11 @@ public class GpsPacket {
     this.type = type;
   }
 
-  public BigInteger getImei() {
+  public Long getImei() {
     return imei;
   }
 
-  public void setImei(BigInteger imei) {
+  public void setImei(Long imei) {
     this.imei = imei;
   }
 

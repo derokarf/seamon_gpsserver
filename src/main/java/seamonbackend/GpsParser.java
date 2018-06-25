@@ -1,9 +1,8 @@
-package gpsmon;
+package seamonbackend;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,15 +34,15 @@ public class GpsParser {
       packet = new GpsPacket();
       second_index =  str_packet.indexOf(",",first_index);
       //imei parse and save
-      packet.setImei(new BigInteger(str_packet.substring(first_index,second_index)));
-      LOG.error(packet.getImei().toString());
+      packet.setImei(new Long(str_packet.substring(first_index,second_index)));
+      LOG.debug(packet.getImei().toString());
       //validate imei
 
       //validate type
       first_index = second_index + 1;
       second_index = str_packet.indexOf(",",first_index);
       packet.setType(str_packet.substring(first_index,second_index));
-      LOG.error(packet.getType());
+      LOG.debug(packet.getType());
 
       //ttdd parse and save
       first_index = second_index + 1;
@@ -55,6 +54,7 @@ public class GpsParser {
       tmpTTDD = str2date(str_packet.substring(first_index,second_index));
       if(tmpTTDD != null){
         packet.setTtdd(tmpTTDD.getTime());
+        LOG.debug(packet.getTtdd());
       }else{
         LOG.error("GPS Time Wrong");
         return null;
@@ -74,21 +74,25 @@ public class GpsParser {
         first_index = first_index + 2;
         second_index = str_packet.indexOf(",",first_index);
         packet.setLat(new Double(str_packet.substring(first_index,second_index)));
+        LOG.debug(packet.getLat());
 
         //longitude
         first_index = second_index + 3;
         second_index = str_packet.indexOf(",",first_index);
         packet.setLng(new Double(str_packet.substring(first_index,second_index)));
+        LOG.debug(packet.getLng());
 
         //speed
         first_index = second_index + 3;
         second_index = str_packet.indexOf(",",first_index);
         packet.setSpeed(new Double(str_packet.substring(first_index,second_index)));
+        LOG.debug(packet.getSpeed());
 
         //course
         first_index = second_index + 1;
         second_index = str_packet.indexOf(";",first_index);
         packet.setCourse(new Double(str_packet.substring(first_index,second_index)));
+        LOG.debug(packet.getCourse());
       }
      return packet;
     }

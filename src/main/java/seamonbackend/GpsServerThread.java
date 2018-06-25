@@ -1,4 +1,4 @@
-package gpsmon;
+package seamonbackend;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.charset.Charset;
-import java.sql.Connection;
 
 
 public class GpsServerThread extends Thread{
@@ -32,19 +31,24 @@ public class GpsServerThread extends Thread{
 
     GpsParser parser = new GpsParser();
     GpsPacket gpsPacket;
-    GpsSqlConn dbConn;
-    Connection conn;
     GpsSqlSettings dbSettings;
     GpsSqlLoader dbLoader;
 
     //connect to DB
     dbSettings = new GpsSqlSettings();
-    dbConn = new GpsSqlConn(dbSettings);
-    if(!dbConn.connect()){
-      LOG.error("Couldn't connection to DB, exit");
+//    dbConn = new GpsSqlConn(dbSettings);
+//    if(!dbConn.connect()){
+//      LOG.error("Couldn't connection to DB, exit");
+//      return;
+//    }
+    dbLoader = new GpsSqlLoader(dbSettings);
+
+    // Init gadgets scope
+    GadgetsScope listGadgets = new GadgetsScope();
+    if(listGadgets.initGadgets(dbSettings) == false) {
+      LOG.error("Невозможно загрузить список трекеров!");
       return;
     }
-    dbLoader = new GpsSqlLoader();
 
     while(next){
       try{
@@ -59,15 +63,21 @@ public class GpsServerThread extends Thread{
          gpsPacket =  parser.parse(strPacket);
          //and save to base is not null
           if(gpsPacket != null){
-            dbLoader.recPacket2Db(gpsPacket,dbConn,"test1");
+            // Проверяем регистрацию
+            Gadget tmpGadget = listGadgets.getGadget(gpsPacket.getImei());
+            if( tmpGadget != null) {
+              // Устанавливаем id_gadget, пакет будет записан в постоянную таблицу
+              gpsPacket.setIdGadget(tmpGadget.getId());
+            }
+            dbLoader.recPacket2Db(gpsPacket);
           }
         }
       } catch (IOException e){
-        e.printStackTrace();
+        LOG.error(e);
         next = false;
       }
     }
-    dbConn.close();
+    dbLoader.close();
     inGpsSocket.close();
   }
 }

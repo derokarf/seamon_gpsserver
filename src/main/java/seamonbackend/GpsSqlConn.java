@@ -1,4 +1,4 @@
-package gpsmon;
+package seamonbackend;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +21,9 @@ public class GpsSqlConn {
   }
 
   public Connection getConn(){
+    if(dbConn == null) {
+      connect();
+    }
     try {
       if (dbConn.isValid(1)) {
         return dbConn;
