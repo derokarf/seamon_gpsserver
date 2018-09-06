@@ -5,7 +5,7 @@ public class GpsSqlSettings {
   protected String dbHost = "localhost"; //database host
   protected String dbUser = "gpsmon"; //database user
   protected String dbPort = "5432"; //database port
-  protected String dbPasswd = "d41d8cd98"; //database password
+  protected String dbPasswd = ""; //database password
   protected String dbTableSettings = ""; //name of table with settings for gadget
   protected String dbTableCommand = "";//name of table with command for gadget
   protected String dbTableAddress = "";//name of table with gadget address
